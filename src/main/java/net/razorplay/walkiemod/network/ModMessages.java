@@ -43,16 +43,10 @@ public class ModMessages {
                 .encoder(ChannelC2SPacket::toBytes)
                 .consumer(ChannelC2SPacket::handle)
                 .add();
+
     }
 
     public static <MSG> void sendToServer(MSG message) {
         INSTANCE.sendToServer(message);
-    }
-
-    public static <MSG> void sendToPlayer(MSG message, ServerPlayerEntity player) {
-        INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), message);
-    }
-    public static <MSG> void sendToClients(MSG message) {
-        INSTANCE.send(PacketDistributor.ALL.noArg(), message);
     }
 }

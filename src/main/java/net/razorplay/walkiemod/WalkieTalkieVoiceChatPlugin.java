@@ -64,9 +64,9 @@ public class WalkieTalkieVoiceChatPlugin implements VoicechatPlugin {
                 return;
             }
 
-            /*if (isWalkieTalkieMute(senderStack)) {
+            if (isWalkieTalkieMute(senderStack)) {
                 return;
-            }*/
+            }
 
             int senderChannel = getChannel(senderStack);
 

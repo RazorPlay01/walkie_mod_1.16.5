@@ -7,6 +7,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
 import net.razorplay.walkiemod.client.gui.screen.WalkieTalkieScreen;
 import net.razorplay.walkiemod.item.custom.WalkieTalkieItem;
+import net.razorplay.walkiemod.network.ModMessages;
 import net.razorplay.walkiemod.util.Util;
 
 import java.util.Objects;

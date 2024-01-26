@@ -9,7 +9,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextComponentUtils;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.fml.common.Mod;
 import net.razorplay.walkiemod.WalkieMod;
 import net.razorplay.walkiemod.item.custom.WalkieTalkieItem;
 import net.razorplay.walkiemod.network.ModMessages;
@@ -20,15 +22,14 @@ import net.razorplay.walkiemod.network.packet.c2s.MuteButtonC2SPacket;
 import java.util.function.Consumer;
 
 public class WalkieTalkieScreen extends Screen {
-    private static WalkieTalkieScreen instance;
     private final int xSize = 195;
     private final int ySize = 76;
     private static final ResourceLocation TEXTURE = new ResourceLocation(WalkieMod.MOD_ID, "textures/gui/gui_walkietalkie.png");
     private static final ITextComponent TITLE = new TranslationTextComponent("");
     private static final ResourceLocation MICROPHONE = new ResourceLocation("voicechat", "textures/icons/microphone_button.png");
     private static ITextComponent SET_CHANNEL = new TranslationTextComponent("screen.walkietalkie.set");
-    private static ITextComponent ACTIVATE_MICRO;
-    private static ITextComponent ACTIVATE_WALKIE;
+    private ITextComponent ACTIVATE_MICRO;
+    private ITextComponent ACTIVATE_WALKIE;
     private Button muteMicro;
     private Button activateWalkie;
     private Button setChannel;
@@ -41,7 +42,6 @@ public class WalkieTalkieScreen extends Screen {
 
     public WalkieTalkieScreen(ItemStack stack) {
         super(TITLE);
-        instance = this;
         this.stack = stack;
 
         Minecraft.getInstance().displayGuiScreen(this);
@@ -51,8 +51,8 @@ public class WalkieTalkieScreen extends Screen {
     protected void init() {
         super.init();
         CHANNEL = new String(String.valueOf(stack.getTag().getInt(WalkieTalkieItem.NBT_KEY_CANAL)));
-        ACTIVATE_WALKIE = new TranslationTextComponent("screen.walkietalkie.is_active").appendString(": "+ stack.getTag().getBoolean(WalkieTalkieItem.NBT_KEY_ACTIVATE));
-        ACTIVATE_MICRO = new TranslationTextComponent("screen.walkietalkie.is_muted").appendString(": "+ stack.getTag().getBoolean(WalkieTalkieItem.NBT_KEY_MUTE));
+        ACTIVATE_WALKIE = new TranslationTextComponent("screen.walkietalkie.is_active").appendString(": " + stack.getTag().getBoolean(WalkieTalkieItem.NBT_KEY_ACTIVATE));
+        ACTIVATE_MICRO = new TranslationTextComponent("screen.walkietalkie.is_muted").appendString(": " + stack.getTag().getBoolean(WalkieTalkieItem.NBT_KEY_MUTE));
 
         this.guiLeft = (this.width - xSize) / 2;
         this.guiTop = (this.height - ySize) / 2;
@@ -90,6 +90,7 @@ public class WalkieTalkieScreen extends Screen {
         });
         this.addButton(this.activateWalkie);
     }
+
     @Override
     public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         this.renderBackground(matrixStack);
@@ -107,6 +108,7 @@ public class WalkieTalkieScreen extends Screen {
 
     private void activateWalkie() {
         ModMessages.sendToServer(new ActivateButtonC2SPacket());
+        this.closeScreen();
     }
 
     private void setChannel() {
@@ -115,10 +117,6 @@ public class WalkieTalkieScreen extends Screen {
 
     private void muteMicro() {
         ModMessages.sendToServer(new MuteButtonC2SPacket());
-        // Obtener el estado del tag del ítem para mostrar en el texto del botón
-        boolean isMuted = stack.getTag().getBoolean(WalkieTalkieItem.NBT_KEY_MUTE);
-
-        // Actualizar el texto del botón con el estado obtenido del tag
-        this.muteMicro.setMessage(new TranslationTextComponent("screen.walkietalkie.is_muted").appendString(": " + isMuted));
+        this.closeScreen();
     }
 }
